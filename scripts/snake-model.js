@@ -4,6 +4,11 @@ function Model() {
   this.units    = [];
   this.snakes   = [];
   this.next     = [];
+  this.props    = [];
+
+  this.props[0] = 100;
+  this.props[1] = 20;
+  this.props[2] = 5;
 
   this.next[MySnake.HEAD_1_S_N] = MySnake.HEAD_2_S_N;
   this.next[MySnake.HEAD_1_W_E] = MySnake.HEAD_2_W_E;
@@ -116,8 +121,59 @@ Model.prototype.getTurn = function(snake, dx, dy) {
    return 0;
 }
 
+var getSetup = function() {
+  var str = window.location.search.toString();
+  var re  = /^\?setup=(.*)$/;
+  str = str.replace(re, "$1");
+  var result = [];
+  if (str) {
+      var type = 0;
+      for (var i = 0; i < str.length; i++) {
+           var c = str.charCodeAt(i);
+           if (c >= "A".charCodeAt(0)) {
+               c -= "A".charCodeAt(0);
+               for (var j = 0; j < c; j++) {
+                    result.push(type);
+               }
+           }
+           if (type == 0) {
+               type = 1;
+           } else {
+               type = 0;
+           }
+      }
+  }
+  return result;
+}
+
 Model.prototype.configure = function(conf) {
+  var setup = getSetup();
+  for (var y = 0; y < MySnake.SIZE_Y; y++) {
+       for (var x = 0; x < MySnake.SIZE_X; x++) {
+            if (setup.length > 0) {
+                if (setup.shift() != 0) {
+                    this.addUnit(x, y, MySnake.WALL, 0);
+                }
+            }
+       }
+  }
   this.addSnake(0, 5, 5, 1, 0);
+}
+
+Model.prototype.addCherry = function() {
+  var cnt = 0;
+  _.each(this.units, function(unit) {
+      if (unit.type == MySnake.CHERRY) cnt++;
+  });
+  var p = this.props[cnt];
+  if (!_.isUndefined(p)) {
+      if (_.random(0, 1000) <= p) {
+          var x = _.random(0, MySnake.SIZE_X - 1);
+          var y = _.random(0, MySnake.SIZE_Y - 1);
+          var ttl = _.random(MySnake.ONE_SECOND * 5, MySnake.ONE_SECOND * 15);
+          this.addUnit(x, y, MySnake.CHERRY, ttl);
+      }
+  }
 }
 
 Model.prototype.tick = function(controller) {
@@ -193,11 +249,12 @@ Model.prototype.tick = function(controller) {
       }
   }, this);
   this.units = units;
+  this.addCherry();
 }
 
 Model.prototype.draw = function(view, ctx) {
   for (var i = 0; i < this.units.length; i++) {
-       view.drawTile(ctx, this.units[i].type, this.units[i].x, this.units[i].y);
+       view.drawTile(ctx, this.units[i].type, this.units[i].x, this.units[i].y, this.units[i].ttl);
   }
 }
 

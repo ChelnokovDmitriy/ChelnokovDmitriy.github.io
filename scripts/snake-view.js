@@ -74,10 +74,19 @@ View.prototype.isReady = function() {
   return true;
 }
 
-View.prototype.drawTile = function(ctx, id, x, y) {
+View.prototype.drawTile = function(ctx, id, x, y, ttl) {
   var res = this.res[ this.tile[id] ];
   if (!_.isUndefined(res)) {
+      var isChanged = false;
+      if ((id == MySnake.CHERRY) && (ttl <= MySnake.ONE_SECOND * 3)) {
+          isChanged = true;
+          ctx.save();
+          ctx.globalAlpha = 0.5;
+      }
       ctx.drawImage(res, x * MySnake.TILE_SIZE, y * MySnake.TILE_SIZE);
+      if (isChanged) {
+          ctx.restore();
+      }
   }
 }
 

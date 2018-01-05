@@ -1,6 +1,8 @@
 MySnake.SIZE_X       = 42;
 MySnake.SIZE_Y       = 20;
+
 MySnake.TILE_SIZE    = 24;
+MySnake.ONE_SECOND   = 10;
 
 MySnake.HEAD_1_S_N   = 1;
 MySnake.HEAD_1_W_E   = 2;
