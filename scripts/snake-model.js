@@ -176,6 +176,19 @@ Model.prototype.addCherry = function() {
   }
 }
 
+var getDir = function(type) {
+  if ((type == MySnake.BODY_S_N) || (type == MySnake.BODY_W_N) || (type == MySnake.BODY_E_N)) {
+      return 0;
+  }
+  if ((type == MySnake.BODY_W_E) || (type == MySnake.BODY_S_E) || (type == MySnake.BODY_N_E)) {
+      return 1;
+  }
+  if ((type == MySnake.BODY_N_S) || (type == MySnake.BODY_E_S) || (type == MySnake.BODY_W_S)) {
+      return 2;
+  }
+  return 3;
+}
+
 Model.prototype.tick = function(controller) {
   var snakes = [];
   _.each(this.snakes, function(snake) {
@@ -199,7 +212,8 @@ Model.prototype.tick = function(controller) {
           var p = this.navigate(snake.x, snake.y, snake.dx, snake.dy);
           var t = this.getUnit(p.x, p.y);
           if ((snake.body.length > 0) && (t === null)) {
-              snake.body[0].type = MySnake.TAIL_1_S_N + direction;
+              var dir = getDir(snake.body[0].type);
+              snake.body[0].type = MySnake.TAIL_1_S_N + dir;
               snake.body[0].ttl  = 2;
           }
           snake.body.push(u);
