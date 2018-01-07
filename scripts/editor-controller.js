@@ -59,10 +59,10 @@ canvas.onmousedown = function(event) {
   mousePressed = true;
   var x = (mouseX / MySnake.TILE_SIZE) | 0;
   var y = (mouseY / MySnake.TILE_SIZE) | 0;
-  if (mousePressed && checkXY(x, y)) {
-      changeUnit(x, y);
-      draw();
-  }
+  lastX = x;
+  lastY = y;
+  changeUnit(x, y);
+  draw();
 }
 
 canvas.onmousemove = function(event) { 
