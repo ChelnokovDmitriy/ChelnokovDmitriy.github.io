@@ -45,8 +45,9 @@ var checkXY = function(x, y) {
 }
 
 window.onkeyup = function(event) {
+  var model = MySnake.model;
   if ((event.key == "Enter") || (event.keyIdentifier == "Enter")) {
-      window.location = "snake.html";
+      window.location = "snake.html?setup=" + model.getSetup();
   }
 }
 

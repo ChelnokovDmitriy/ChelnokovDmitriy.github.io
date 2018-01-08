@@ -130,9 +130,15 @@ var getSetup = function() {
       var type = 0;
       for (var i = 0; i < str.length; i++) {
            var c = str.charCodeAt(i);
-           if (c >= "A".charCodeAt(0)) {
-               c -= "A".charCodeAt(0);
-               for (var j = 0; j < c; j++) {
+           var num = null;
+           if ((c >= "0".charCodeAt(0)) && (c <= "9".charCodeAt(0))) {
+               num = c - "0".charCodeAt(0);
+           }
+           if ((c >= "A".charCodeAt(0)) && (c <= "Z".charCodeAt(0))) {
+               num = c - "A".charCodeAt(0) + 10;
+           }
+           if (num !== null) {
+               for (var j = 0; j < num; j++) {
                     result.push(type);
                }
            }
