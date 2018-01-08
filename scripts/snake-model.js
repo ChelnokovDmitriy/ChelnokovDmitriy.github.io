@@ -219,8 +219,8 @@ Model.prototype.tick = function(controller) {
           snake.body.push(u);
           snake.x = p.x;
           snake.y = p.y;
+          direction = this.getDirection(snake.dx, snake.dy);
           if (t === null) {
-              direction = this.getDirection(snake.dx, snake.dy);
               this.addUnit(p.x, p.y, MySnake.HEAD_1_S_N + direction, 2);
               snake.tail = snake.body.shift();
           } else {
