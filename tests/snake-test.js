@@ -186,3 +186,25 @@ QUnit.test( "Snake", function( assert ) {
   assert.equal( controller.players.length, 1, "signal found");
   assert.equal( controller.players[0], 1, "... is done.");
 });
+
+QUnit.test( "Head Bug", function( assert ) {
+  var controller = MySnake.controller;
+  var model = MySnake.model;  
+  model.clear();
+  assert.equal( model.addSnake(0, 3, 3, 1, 0), true, "add Snake");
+  assert.equal( model.addUnit(3, 4, MySnake.CHERRY, 3), true, "add cherry");
+  assert.equal( model.getUnit(3, 3).type, MySnake.HEAD_1_W_E, "(3,3) is head");
+  assert.equal( model.getUnit(2, 3).type, MySnake.BODY_W_E, "(2,3) is body");
+  assert.equal( model.getUnit(1, 3).type, MySnake.TAIL_1_W_E, "(1,3) is tail");
+  assert.equal( model.getUnit(3, 4).type, MySnake.CHERRY, "(3,4) is head");
+  model.send(0, 0, 1);
+  model.tick(controller);
+  assert.equal( model.getUnit(3, 3).type, MySnake.HEAD_2_W_E, "(3,3) is head");
+  assert.equal( model.getUnit(2, 3).type, MySnake.BODY_W_E, "(2,3) is body");
+  assert.equal( model.getUnit(1, 3).type, MySnake.TAIL_2_W_E, "(1,3) is tail");
+  assert.equal( model.getUnit(3, 4).type, MySnake.CHERRY, "(3,4) is head");
+  model.tick(controller);
+  assert.equal( model.getUnit(3, 3).type, MySnake.BODY_W_S, "(3,3) is body");
+  assert.equal( model.getUnit(2, 3).type, MySnake.BODY_W_E, "(2,3) is body");
+  assert.equal( model.getUnit(3, 4).type, MySnake.HEAD_1_N_S, "(3,4) is head");
+});
