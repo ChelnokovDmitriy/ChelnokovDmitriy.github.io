@@ -169,7 +169,7 @@ Model.prototype.configure = function(conf) {
 Model.prototype.addCherry = function() {
   var cnt = 0;
   _.each(this.units, function(unit) {
-      if (unit.type == MySnake.CHERRY) cnt++;
+      if ((unit.type == MySnake.CHERRY) || (unit.type == MySnake.BEE)) cnt++;
   });
   var p = this.props[cnt];
   if (!_.isUndefined(p)) {
@@ -177,7 +177,12 @@ Model.prototype.addCherry = function() {
           var x = _.random(0, MySnake.SIZE_X - 1);
           var y = _.random(0, MySnake.SIZE_Y - 1);
           var ttl = _.random(MySnake.ONE_SECOND * 5, MySnake.ONE_SECOND * 15);
-          this.addUnit(x, y, MySnake.CHERRY, ttl);
+          var t = _.random(0, 1);
+		  if (t == 0) {
+              this.addUnit(x, y, MySnake.CHERRY, ttl);
+		  } else {
+              this.addUnit(x, y, MySnake.BEE, ttl);
+		  }
       }
   }
 }

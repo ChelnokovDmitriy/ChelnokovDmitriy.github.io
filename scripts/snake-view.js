@@ -24,6 +24,7 @@ View.prototype.configure = function() {
       this.addRes("background");
       this.addRes("wall", MySnake.WALL);
       this.addRes("cherry", MySnake.CHERRY);
+      this.addRes("bee", MySnake.BEE);
 
       this.addRes("head-snh", MySnake.HEAD_1_S_N);
       this.addRes("head-weh", MySnake.HEAD_1_W_E);
