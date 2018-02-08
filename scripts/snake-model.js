@@ -111,6 +111,21 @@ Model.prototype.addSnake = function(player, x, y, dx, dy) {
    return true;
 }
 
+Model.prototype.checkSnake = function(player, x, y, dx, dy) {
+   if (player < 0) return false;
+   if (!_.isUndefined(this.snakes[player])) return false;
+   if ((Math.abs(dx) > 1) || (Math.abs(dy) > 1)) return false;
+   if ((dx != 0) && (dy != 0)) return false;
+   if ((dx == 0) && (dy == 0)) return false;
+   var direction = this.getDirection(dx, dy);
+   if (this.getUnit(x, y) !== null) return false;
+   var body = this.navigate(x, y, -dx, -dy);
+   if (this.getUnit(body.x, body.y) !== null) return false;
+   var tail = this.navigate(body.x, body.y, -dx, -dy);
+   if (this.getUnit(tail.x, tail.y) !== null) return false;
+   return true;
+}
+
 Model.prototype.getTurn = function(snake, dx, dy) {
    if ((Math.abs(dx) > 1) || (Math.abs(dy) > 1)) return null;
    if ((dx != 0) && (dy != 0)) return null;
@@ -163,7 +178,14 @@ Model.prototype.configure = function(conf) {
             }
        }
   }
-  this.addSnake(0, 5, 5, 1, 0);
+  while (true) {
+       var x = _.random(10, MySnake.SIZE_X - 10);
+       var y = _.random(0, MySnake.SIZE_Y - 1);
+ 	   if (this.checkSnake(0, x, y, 1, 0)) {
+           this.addSnake(0, x, y, 1, 0);
+		   break;
+	   }
+  }
 }
 
 Model.prototype.addCherry = function() {
@@ -177,8 +199,8 @@ Model.prototype.addCherry = function() {
           var x = _.random(0, MySnake.SIZE_X - 1);
           var y = _.random(0, MySnake.SIZE_Y - 1);
           var ttl = _.random(MySnake.ONE_SECOND * 5, MySnake.ONE_SECOND * 15);
-          var t = _.random(0, 1);
-		  if (t == 0) {
+          var t = _.random(0, 10);
+		  if (t <= 6) {
               this.addUnit(x, y, MySnake.CHERRY, ttl);
 		  } else {
               this.addUnit(x, y, MySnake.BEE, ttl);
@@ -198,6 +220,22 @@ var getDir = function(type) {
       return 2;
   }
   return 3;
+}
+
+Model.prototype.beeMove = function() {
+	_.each(this.units, function(u) {
+		if (u.type == MySnake.BEE) {
+			var t = _.random(0, 10);
+			if (t < 5) {
+			    var dx = _.random(-1, 1);
+			    var dy = _.random(-1, 1);
+			    if (this.getUnit(u.x + dx, u.y + dy) === null) {
+				    u.x += dx;
+				    u.y += dy;
+			    }
+			}
+		}
+	}, this);
 }
 
 Model.prototype.tick = function(controller) {
@@ -275,6 +313,7 @@ Model.prototype.tick = function(controller) {
   }, this);
   this.units = units;
   this.addCherry();
+  this.beeMove();
 }
 
 Model.prototype.draw = function(view, ctx) {

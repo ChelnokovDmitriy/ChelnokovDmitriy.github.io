@@ -1,6 +1,7 @@
 (function() {
 
 var DELAY_INTERVAL = 100;
+var stop = false;
 
 var CMD_NAMES   = {
     "ArrowUp":    { player: 0, dx:  0, dy: -1 },
@@ -17,9 +18,7 @@ var CMD_NAMES   = {
     "d":          { player: 1, dx:  1, dy:  0 }
 };
 
-function Controller() {
-
-}
+function Controller() {}
 
 Controller.prototype.run = function() {
   var model = MySnake.model;
@@ -28,14 +27,16 @@ Controller.prototype.run = function() {
       model.tick(this);
       view.drawAll();
   }
-  _.delay(function() {
-     MySnake.controller.run();
-  }, DELAY_INTERVAL);
+  if (!stop) {
+      _.delay(function() {
+         MySnake.controller.run();
+      }, DELAY_INTERVAL);
+  }
 }
 
 Controller.prototype.die = function(player) {
-  // TODO:
-
+  alert("You lose!");	
+  stop = true;
 }
 
 window.onkeyup = function(event) {
